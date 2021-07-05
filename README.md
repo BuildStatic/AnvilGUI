@@ -16,6 +16,34 @@ on the issues tab.
 
 AnvilGUI requires the usage of Maven or a Maven compatible build system. 
 ```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>3.2.4</version>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <minimizeJar>true</minimizeJar>
+                        <createDependencyeducedPom>false</createDependencyeducedPom>
+                        <relocations>
+                            <relocation>
+                                <pattern>net.wesjd.anvilgui</pattern>
+                                <shadedPattern>[YOUR_PLUGIN_PACKAGE].anvilgui</shadedPattern> <!-- Replace this -->
+                            </relocation>
+                        </relocations>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+    </plugins>
+</build>
+
 <dependency>
     <groupId>net.wesjd</groupId>
     <artifactId>anvilgui</artifactId>
@@ -26,6 +54,27 @@ AnvilGUI requires the usage of Maven or a Maven compatible build system.
     <id>codemc-snapshots</id>
     <url>https://repo.codemc.io/repository/maven-snapshots/</url>
 </repository>
+```
+
+```groovy
+plugins {
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+repositories {
+    maven {
+        url 'https://repo.codemc.io/repository/maven-snapshots/'
+    }
+}
+
+dependencies {
+    implementation 'net.wesjd:anvilgui:1.5.1-SNAPSHOT'
+}
+
+shadowJar {
+    minimize()
+    relocate 'net.wesjd.anvilgui', '[YOUR PLUGIN PACKAGE].anvilgui'
+}
 ```
 
 ### In your plugin
